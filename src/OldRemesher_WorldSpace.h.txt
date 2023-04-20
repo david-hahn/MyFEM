@@ -1,0 +1,39 @@
+#ifndef REMESHER_H
+#define REMESHER_H
+
+#include "LinearFEM.h"
+
+#include <vtkSmartPointer.h>
+class vtkUnstructuredGrid;
+
+#include <mmg/mmg3d/libmmgtypes.h>
+
+namespace MyFEM{
+	class Remesher{
+	public:
+		Remesher(){mmgMesh=NULL;mmgSfcn=NULL; setDefaultOptions();}
+		~Remesher(){ cleanup(); }
+		void cleanup();
+
+		void setDefaultOptions();
+		void remesh(LinearFEM& fem);
+	
+		void buildMMGmesh(LinearFEM& fem);                                          // Step 1: build a MMG mesh from the data stored in the FEM object
+		void buildVTKmesh();                                                        // Step 2: build a VTK mesh from the result of the MMG remeshing
+		void interpolateData(LinearFEM& fem);                                       // Step 3: interpolate data from the input mesh to the remeshed version
+		void buildBoundaryMesh(vtkSmartPointer<vtkUnstructuredGrid> inputBoundary); // Step 4: extract the boundary of the new mesh and interpolate boundary IDs from the input boundary mesh
+
+
+		MMG5_pMesh mmgMesh; // mesh storage in MMG format
+		MMG5_pSol  mmgSfcn; // sizing function for remeshing
+		vtkSmartPointer<vtkUnstructuredGrid> newMesh; // VTK storage for remeshing result
+		vtkSmartPointer<vtkUnstructuredGrid> newMeshBoundary;
+		vtkSmartPointer<vtkPoints>           newRestCoords;
+		Eigen::MatrixXd                      newMatParams;
+		std::map<int,double> dOpt;
+		std::map<int,int>    iOpt;
+	};
+
+}
+
+#endif // !REMESHER_H

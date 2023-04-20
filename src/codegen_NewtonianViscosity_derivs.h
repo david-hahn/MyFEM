@@ -1,0 +1,12 @@
+  double t2 = f_1_2+f_2_1;
+  double t3 = f_1_3+f_3_1;
+  double t4 = f_2_3+f_3_2;
+  stress_nu[0] = f_1_1*2.0;
+  stress_nu[1] = t2;
+  stress_nu[2] = t3;
+  stress_nu[3] = t2;
+  stress_nu[4] = f_2_2*2.0;
+  stress_nu[5] = t4;
+  stress_nu[6] = t3;
+  stress_nu[7] = t4;
+  stress_nu[8] = f_3_3*2.0;
